@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 void uzupelnij(int **tab, int Y, int X)
 {
@@ -10,6 +11,17 @@ void uzupelnij(int **tab, int Y, int X)
         for (int j = 0; j < X; j++)
             tab[i][j] = rand() % 100;
     }
+}
+
+void wypisz(int **tab, int Y, int X)
+{
+    for (int i = 0; i < Y; i++)
+    {
+        for (int j = 0; j < X; j++)
+            printf("%d ", tab[i][j]);
+        printf("\n");
+    }
+    printf("\n");
 }
 
 int **generuj(int Y, int X)
@@ -22,7 +34,7 @@ int **generuj(int Y, int X)
     return tab;
 }
 
-void srednia(int **tab, int Y, int X)
+void obliczenia(int **tab, int Y, int X)
 {
     for (int i = 0; i < X; i++)
     {
@@ -31,32 +43,43 @@ void srednia(int **tab, int Y, int X)
         {
             suma_kol = suma_kol + tab[j][i];
         }
-        printf("Srednia z kolumny %d wynosi %.2lf\n", i, suma_kol / Y);
+        double kwadraty_kol = 0;
+        for (int j = 0; j < Y; j++)
+        {
+            kwadraty_kol = kwadraty_kol + pow((tab[j][i] - suma_kol / Y), 2);
+        }
+        printf("Srednia z kolumny %d wynosi %.2lf natomiast wariancja wynosi %.2lf\n\n", i, suma_kol / Y, kwadraty_kol / Y);
     }
-    for (int k = 0; k < Y; k++)
+    for (int i = 0; i < Y; i++)
     {
         double suma_wiersz = 0;
-        for (int l = 0; l < X; l++)
+        for (int j = 0; j < X; j++)
         {
-            suma_wiersz = suma_wiersz + tab[k][l];
+            suma_wiersz = suma_wiersz + tab[i][j];
         }
-        printf("Srednia z wiersza %d wynosi %.2lf\n", k, suma_wiersz / X);
+        double kwadraty_wiersz = 0;
+        for (int j = 0; j < X; j++)
+        {
+            kwadraty_wiersz = kwadraty_wiersz + pow((tab[i][j] - suma_wiersz / X), 2);
+        }
+        printf("Srednia z wiersza %d wynosi %.2lf natomiast wariancja wynosi %.2lf\n\n", i, suma_wiersz / X, kwadraty_wiersz / X);
     }
 }
 
 int main()
 {
     srand(time(NULL));
-    int X = 5, Y = 3;
+    int X, Y;
+    printf("Program służy do generowania tablic 2d o zadanej liczbie kolumn X oraz liczbie wierszy Y wypełnionych losowymi liczbami, następnie dla każdej kolumny oraz wiersza obliczana jest średnia oraz wariancja\n");
+    printf("\nPodaj liczbę kolumn X:\n");
+    scanf("%d", &X);
+    printf("Podaj liczbę wierszy Y:\n");
+    scanf("%d", &Y);
+    printf("\n");
     int **tab;
     tab = generuj(Y, X);
-    for (int i = 0; i < Y; i++)
-    {
-        for (int j = 0; j < X; j++)
-            printf("%d ", tab[i][j]);
-        printf("\n");
-    }
-    srednia(tab, Y, X);
+    wypisz(tab, Y, X);
+    obliczenia(tab, Y, X);
     for (int i = 0; i < Y; i++)
         free(tab[i]);
     free(tab);
